@@ -1,0 +1,9 @@
+version: "3"
+services:
+  nutstat:
+    image: nutstat
+    command: --config /config/nutstat.yml update
+    container_name: nutstat
+    volumes:
+      - ./nutstat.yml:/config/nutstat.yml
+    restart: unless-stopped
