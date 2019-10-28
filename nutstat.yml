@@ -1,0 +1,8 @@
+nuthost: localhost
+nutusername: admin
+nutpassword: password
+nutupsname: myups
+influxdbhost: http://localhost:8086/
+influxdbdatabase: ups
+influxdbusername: ups
+influxdbpassword: ups
