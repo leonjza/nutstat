@@ -12,6 +12,6 @@ FROM golang:alpine
 
 COPY --from=build /src/nutstat /
 
-VOLUME ["/"]
+VOLUME ["/config"]
 
 ENTRYPOINT ["/nutstat"]
