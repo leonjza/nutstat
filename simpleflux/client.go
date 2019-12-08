@@ -50,12 +50,12 @@ func (s *SimpleInfluxDB) Write(line string) error {
 }
 
 // Ping will ping influxdb
-func (s *SimpleInfluxDB) Ping() error {
+func (s *SimpleInfluxDB) Ping() (bool, error) {
 	url := s.base + `/ping`
 
 	req, err := http.NewRequest("GET", url, strings.NewReader(``))
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// add auth
@@ -65,10 +65,12 @@ func (s *SimpleInfluxDB) Ping() error {
 
 	resp, err := s.c.Do(req)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	log.Printf(`Ping to InfluxDB went HTTP %d`, resp.StatusCode)
 
-	return nil
+	// https://docs.influxdata.com/influxdb/v1.7/tools/api/#ping-http-endpoint
+
+	return true, nil
 }

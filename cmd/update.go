@@ -38,6 +38,16 @@ updated UPS statistics at an interval.`,
 		// setup influxDB
 		c := simpleflux.NewSimpleInfluxDB()
 
+		log.Printf("Making sure Influx is reachable")
+		for {
+			status, err := c.Ping()
+			if status == true {
+				break
+			}
+			log.Printf("InfluxDB is not available: %s. Sleeping 30s", err)
+			time.Sleep(time.Second * 30)
+		}
+
 		// search for the UPS we should poll
 		upsList, err := client.GetUPSList()
 
@@ -88,6 +98,7 @@ updated UPS statistics at an interval.`,
 			}
 
 			statusLine = strings.TrimSuffix(statusLine, ",")
+			log.Printf(`Posting line: %s\n`, statusLine)
 
 			if err = c.Write(statusLine); err != nil {
 				log.Printf(`Error posting to InfluxDB: %s`, err)
