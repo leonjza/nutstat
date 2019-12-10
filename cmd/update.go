@@ -73,10 +73,9 @@ updated UPS statistics at an interval.`,
 			// var statusLine string
 			values, _ := targetUps.GetVariables()
 			statusLine := `ups,ups_name=` + viper.GetString("nutupsname") + ` `
+			sanityCheck := statusLine
 
 			for _, v := range values {
-				// log.Printf(`Name: %s => Type: %s => Val: %s`, v.Name, v.Type, v.Value)
-
 				switch v.Name {
 				case "battery.charge":
 					statusLine += fmt.Sprintf(`%s=%d,`, v.Name, v.Value.(int64))
@@ -98,7 +97,10 @@ updated UPS statistics at an interval.`,
 			}
 
 			statusLine = strings.TrimSuffix(statusLine, ",")
-			log.Printf(`Posting line: %s\n`, statusLine)
+			if statusLine == sanityCheck {
+				log.Fatalf(`Could cound read information from NUT. Exiting...`)
+			}
+			log.Printf(`Posting line: %s`, statusLine)
 
 			if err = c.Write(statusLine); err != nil {
 				log.Printf(`Error posting to InfluxDB: %s`, err)
